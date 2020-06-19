@@ -2,7 +2,11 @@
 import React, { useState } from 'react';
 import { Pane, Button } from 'evergreen-ui';
 
-function Reset() {
+type Props = {
+  refetch: () => void,
+};
+
+function Reset({ refetch }: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
   const reset = () => {
@@ -12,6 +16,7 @@ function Reset() {
       method: 'POST',
     }).then(() => {
       setIsLoading(false);
+      refetch();
     });
   };
 

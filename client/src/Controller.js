@@ -2,13 +2,11 @@
 import React from 'react';
 import { Pane } from 'evergreen-ui';
 import ActiveBuzzes from './ActiveBuzzes';
-import Reset from './Reset';
 
 function Controller() {
   return (
-    <Pane>
+    <Pane background="rgba(255,255,255,0.6)" padding={24}>
       <ActiveBuzzes />
-      <Reset />
     </Pane>
   );
 }

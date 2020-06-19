@@ -60,10 +60,10 @@ checkBrowsers(paths.appPath, isInteractive)
     // This lets us display how much they changed later.
     return measureFileSizesBeforeBuild(paths.appBuild);
   })
-  .then((previousFileSizes) => {
-    return buildServiceWorker(previousFileSizes);
-  })
-  .then((stuff) => stuff.previousFileSizes)
+  // .then((previousFileSizes) => {
+  //   return buildServiceWorker(previousFileSizes);
+  // })
+  // .then((stuff) => stuff.previousFileSizes)
   .then((previousFileSizes) => {
     // Remove all content but keep the directory so that
     // if you're in it, you don't end up in Trash

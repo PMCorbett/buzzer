@@ -10,7 +10,7 @@
     "build:library": "rm -rf lib/ && babel client/src --out-dir lib/src --copy-files && cp -a client/public/. lib/public",
     "client": "PORT=7777 node --trace-deprecation scripts/start.js",
     "coverage:flow": "flow-coverage-report",
-    "deploy": "sls deploy --no-confirm --region eu-west-2 --verbose",
+    "deploy": "AWS_PROFILE=personal sls deploy --no-confirm --region eu-west-2 --verbose",
     "dev": "NODE_ENV=development concurrently --kill-others-on-fail \"npm run backend\" \"npm run client\"",
     "dev:localgraph": "GRAPH_ENDPOINT=http://localhost:3000/graphql npm run dev",
     "dev:static": "BACKEND_URL=\"http://localhost:7070\" npm run build && NODE_ENV=development concurrently --kill-others-on-fail \"BACKEND_URL=\"http://localhost:7070\" npm run backend\" \"npx serve -l 8765 client/build\"",

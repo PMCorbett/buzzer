@@ -34,25 +34,16 @@ provider:
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
-        - 'ssm:GetParameter'
-        - 'ssm:GetParameters'
-      Resource: ${self:custom.ssmPaths.${self:provider.stage}}
-    - Effect: 'Allow'
-      Action:
-        - 's3:ListBucket'
-      Resource:
-        { 'Fn::Join': ['', ['arn:aws:s3:::', { 'Ref': 'LanguageBucket' }]] }
-    - Effect: 'Allow'
-      Action:
-        - 's3:PutObject'
-        - 's3:PutObjectAcl'
-        - 's3:GetObject'
-      Resource:
-        Fn::Join:
-          - ''
-          - - 'arn:aws:s3:::'
-            - 'Ref': 'LanguageBucket'
-            - '/*'
+        - 'dynamodb:PutItem'
+        - 'dynamodb:DeleteItem'
+        - 'dynamodb:Scan'
+        # New permissions needed for stream
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+        - dynamodb:DescribeStream
+        - dynamodb:ListStreams
+      Resource: { Fn::GetAtt: [buzzTable, Arn] }
+
 package:
   exclude:
     - client/**
@@ -67,8 +58,69 @@ functions:
       - http:
           path: api/buzz
           method: post
+    environment:
+      BUZZ_TABLE:
+        Ref: buzzTable
+  buzzes:
+    handler: handler.buzzes
+    events:
+      - http:
+          path: api/buzzes
+          method: get
+    environment:
+      BUZZ_TABLE:
+        Ref: buzzTable
+  reset:
+    handler: handler.reset
+    events:
+      - http:
+          path: api/reset
+          method: post
+    environment:
+      BUZZ_TABLE:
+        Ref: buzzTable
 
 resources:
+  Resources:
+    IPv4HostAliasRecord:
+      Type: AWS::Route53::RecordSet
+      Properties:
+        HostedZoneName: ${self:custom.domainName.${opt:stage, 'dev'}}.
+        Name: ${self:custom.alias.${opt:stage, 'dev'}}.${self:custom.domainName.${opt:stage, 'dev'}}.
+        Type: A
+        AliasTarget:
+          DNSName:
+            Fn::GetAtt: [ApiDistribution, DomainName]
+          HostedZoneId: Z2FDTNDATAQYW2
+    IPv6HostAliasRecord:
+      Type: AWS::Route53::RecordSet
+      Properties:
+        HostedZoneName: ${self:custom.domainName.${opt:stage, 'dev'}}.
+        Name: ${self:custom.alias.${opt:stage, 'dev'}}.${self:custom.domainName.${opt:stage, 'dev'}}.
+        Type: AAAA
+        AliasTarget:
+          DNSName:
+            Fn::GetAtt: [ApiDistribution, DomainName]
+          HostedZoneId: Z2FDTNDATAQYW2
+    buzzTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: "${opt:stage, 'dev'}BuzzTable"
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+          - AttributeName: uuid
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+          - AttributeName: uuid
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_IMAGE
   Outputs:
     ApiDistributionId:
       Description: Api Distirbution Id
@@ -90,10 +142,22 @@ custom:
     dev: buzzer-dev
     prod: buzzer-prod
 
+  alias:
+    dev: buzzer
+    prod: buzzer2
+  domainName:
+    dev: patrickandgrace.com
+    prod: patrickandgrace.com
+  certificate:
+    dev: arn:aws:acm:us-east-1:963777545862:certificate/ee3a5994-e3e5-41a5-8a25-1e3f5f883ae4
+    prod: arn:aws:acm:us-east-1:963777545862:certificate/ee3a5994-e3e5-41a5-8a25-1e3f5f883ae4
   fullstack:
     apiPath: api
     bucketName: ${self:custom.bucketName.${self:provider.stage}}
+    certificate: ${self:custom.certificate.${opt:stage, 'dev'}}
     clientCommand: npm run build:client
+    domain:
+      - ${self:custom.alias.${opt:stage, 'dev'}}.${self:custom.domainName.${opt:stage, 'dev'}}
     distributionFolder: client/build
     indexDocument: index.html
     singlePageApp: true
