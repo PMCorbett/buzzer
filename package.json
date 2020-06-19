@@ -94,7 +94,8 @@
     "styled-components": "^4.4.1",
     "styled-tools": "^1.6.0",
     "ua-parser-js": "^0.7.19",
-    "use-persisted-state": "^0.3.0"
+    "use-persisted-state": "^0.3.0",
+    "uuid": "^8.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.4",

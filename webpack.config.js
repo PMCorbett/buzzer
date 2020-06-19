@@ -6,7 +6,11 @@ module.exports = {
   mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
   entry: slsw.lib.entries,
   target: 'node',
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals({
+      whitelist: ['uuid'],
+    }),
+  ],
   module: {
     rules: [
       {

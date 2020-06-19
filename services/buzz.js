@@ -1,7 +1,7 @@
 // @flow
 import AWS from 'aws-sdk';
 import type { APIGatewayEvent } from 'flow-aws-lambda/index';
-import uuid from 'uuid';
+import { v1 as uuid } from 'uuid';
 
 export default (event: APIGatewayEvent<any>) => {
   const { name } = JSON.parse(
