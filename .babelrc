@@ -1,0 +1,16 @@
+{
+  "presets": [
+    [
+      "airbnb",
+      {
+        "targets": "> 0.2%, not dead, not ie <= 11, not op_mini all"
+      }
+    ],
+    "@babel/preset-flow"
+  ],
+  "plugins": [
+    "@babel/plugin-proposal-class-properties",
+    "styled-components",
+    "inline-react-svg"
+  ]
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.crowdlab.live",
+      "sha256_cert_fingerprints": [
+        "F9:3C:56:03:36:08:86:AC:F4:E6:A3:E9:1A:A7:CB:82:77:E0:CA:76:60:F1:7E:CC:30:29:C3:EB:32:05:BD:E2"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.hallandpartners.tempo",
+      "sha256_cert_fingerprints": [
+        "85:0A:9A:69:90:B1:30:94:7D:12:29:03:88:BB:83:E8:F9:B8:AA:D2:CA:B0:75:18:0B:88:85:7A:07:C6:BF:52"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.twocv.momento",
+      "sha256_cert_fingerprints": [
+        "D7:0B:15:78:E7:48:15:64:5D:20:80:51:53:B3:31:F4:96:10:C1:15:5C:C2:97:3F:04:4F:F2:07:03:CE:B2:B4"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.spacedoctors.cymbol",
+      "sha256_cert_fingerprints": [
+        "17:8E:C3:73:9B:3C:1B:5A:C9:11:82:EE:D9:3D:17:C4:0B:1E:0C:6F:25:0B:C3:D7:86:D3:01:07:5E:94:A4:D0"
+      ]
+    }
+  }
+]

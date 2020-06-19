@@ -1,0 +1,26 @@
+[ignore]
+.*/node_modules/.*/test/.*
+.*/node_modules/enzyme-matchers/src/\(assertions\|utils\)/.*
+.*/node_modules/polished/\(src\|lib|dist\)/.*
+.*/node_modules/styled-components/\(src\|lib\)/.*
+.*/node_modules/stylelint/.*
+.*/node_modules/immutable/dist/immutable.js.flow
+.*/node_modules/react-beautiful-dnd/\(src\|dist\)/.*
+
+[include]
+.*/node_modules/polished/src/types/.*
+
+[untyped]
+; https://github.com/facebook/draft-js/issues/1496#issuecomment-353895318
+.*/node_modules/draft-js/lib/DraftEditor.react.js.flow
+.*/node_modules/draft-js/lib/DraftEditorLeaf.react.js.flow
+; https://github.com/facebook/draft-js/issues/1621
+.*/node_modules/draft-js/lib/ContentBlock.js.flow
+.*/node_modules/draft-js/lib/ContentBlockNode.js.flow
+
+[libs]
+
+[options]
+module.name_mapper='^types/\(.*\)$' -> '<PROJECT_ROOT>/types/\1.js'
+module.ignore_non_literal_requires=true
+server.max_workers=1

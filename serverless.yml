@@ -1,0 +1,109 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: buzzer
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+# frameworkVersion: "=X.X.X"
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: '>=1.0.0 <2.0.0'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, self:custom.defaultStage}
+  region: eu-west-2
+  memorySize: 256
+  apiGateway:
+    binaryMediaTypes:
+      - 'image/png'
+
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'ssm:GetParameter'
+        - 'ssm:GetParameters'
+      Resource: ${self:custom.ssmPaths.${self:provider.stage}}
+    - Effect: 'Allow'
+      Action:
+        - 's3:ListBucket'
+      Resource:
+        { 'Fn::Join': ['', ['arn:aws:s3:::', { 'Ref': 'LanguageBucket' }]] }
+    - Effect: 'Allow'
+      Action:
+        - 's3:PutObject'
+        - 's3:PutObjectAcl'
+        - 's3:GetObject'
+      Resource:
+        Fn::Join:
+          - ''
+          - - 'arn:aws:s3:::'
+            - 'Ref': 'LanguageBucket'
+            - '/*'
+package:
+  exclude:
+    - client/**
+    - flow-typed/**
+    - __mocks__/**
+    - .circleci/**
+
+functions:
+  buzz:
+    handler: handler.buzz
+    events:
+      - http:
+          path: api/buzz
+          method: post
+
+resources:
+  Outputs:
+    ApiDistributionId:
+      Description: Api Distirbution Id
+      Value:
+        Ref: ApiDistribution
+
+plugins:
+  - serverless-webpack
+  - fullstack-serverless
+  - serverless-offline
+  - serverless-api-compression
+  - serverless-print-dots
+  - serverless-cloudfront-invalidate
+
+custom:
+  defaultStage: dev
+  contentCompression: 1024
+  bucketName:
+    dev: buzzer-dev
+    prod: buzzer-prod
+
+  fullstack:
+    apiPath: api
+    bucketName: ${self:custom.bucketName.${self:provider.stage}}
+    clientCommand: npm run build:client
+    distributionFolder: client/build
+    indexDocument: index.html
+    singlePageApp: true
+  serverless-offline:
+    port: 7070
+  cloudfrontInvalidate:
+    distributionIdKey: ApiDistributionId
+    items:
+      - '/*'
+  webpack:
+    includeModules:
+      forceExclude:
+        - aws-sdk
